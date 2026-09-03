@@ -88,13 +88,20 @@ WSGI_APPLICATION = 'portfolio.wsgi.application'
 
 DATABASES = {
     "default": dj_database_url.config(
-        default=os.environ.get(
-            "DATABASE_URL",
-            "mysql://root:sashikiran@localhost:3306/sashi_portfolio"
-        ),
+        default=None,
         conn_max_age=600,
     )
 }
+
+if not os.environ.get("DATABASE_URL"):
+    DATABASES["default"] = {
+        "ENGINE": "django.db.backends.mysql",
+        "NAME": os.environ.get("DB_NAME", "sashi_portfolio"),
+        "USER": os.environ.get("DB_USER", "root"),
+        "PASSWORD": os.environ.get("DB_PASSWORD", ""),
+        "HOST": os.environ.get("DB_HOST", "localhost"),
+        "PORT": os.environ.get("DB_PORT", "3306"),
+    }
 
 
 # Password validation
